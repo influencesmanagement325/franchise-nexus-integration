@@ -27,7 +27,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { notificationsQuery } from "@/lib/franchise/api";
 
-const NAV = [
+const NAV: {
+  to: string;
+  label: string;
+  icon: typeof Gauge;
+  exact?: boolean;
+}[] = [
   { to: "/franchise-manager", label: "Control Tower", icon: Gauge, exact: true },
   { to: "/franchise-manager/applications", label: "Applications", icon: ClipboardList },
   { to: "/franchise-manager/franchises", label: "Franchises", icon: Building2 },
