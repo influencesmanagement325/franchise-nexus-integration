@@ -23,6 +23,7 @@ import { Route as FranchiseManagerNotificationsRouteImport } from './routes/fran
 import { Route as FranchiseManagerPerformanceRouteImport } from './routes/franchise-manager.performance'
 import { Route as FranchiseManagerReportsRouteImport } from './routes/franchise-manager.reports'
 import { Route as FranchiseManagerRoyaltiesRouteImport } from './routes/franchise-manager.royalties'
+import { Route as FranchiseManagerSettingsRouteImport } from './routes/franchise-manager.settings'
 import { Route as FranchiseManagerTerritoriesRouteImport } from './routes/franchise-manager.territories'
 
 const IndexRoute = IndexRouteImport.update({
@@ -104,6 +105,12 @@ const FranchiseManagerRoyaltiesRoute =
     path: '/royalties',
     getParentRoute: () => FranchiseManagerRoute,
   } as any)
+const FranchiseManagerSettingsRoute =
+  FranchiseManagerSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
 const FranchiseManagerTerritoriesRoute =
   FranchiseManagerTerritoriesRouteImport.update({
     id: '/territories',
@@ -125,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/franchise-manager/performance': typeof FranchiseManagerPerformanceRoute
   '/franchise-manager/reports': typeof FranchiseManagerReportsRoute
   '/franchise-manager/royalties': typeof FranchiseManagerRoyaltiesRoute
+  '/franchise-manager/settings': typeof FranchiseManagerSettingsRoute
   '/franchise-manager/territories': typeof FranchiseManagerTerritoriesRoute
   '/franchise-manager/': typeof FranchiseManagerIndexRoute
 }
@@ -141,6 +149,7 @@ export interface FileRoutesByTo {
   '/franchise-manager/performance': typeof FranchiseManagerPerformanceRoute
   '/franchise-manager/reports': typeof FranchiseManagerReportsRoute
   '/franchise-manager/royalties': typeof FranchiseManagerRoyaltiesRoute
+  '/franchise-manager/settings': typeof FranchiseManagerSettingsRoute
   '/franchise-manager/territories': typeof FranchiseManagerTerritoriesRoute
   '/franchise-manager': typeof FranchiseManagerIndexRoute
 }
@@ -159,6 +168,7 @@ export interface FileRoutesById {
   '/franchise-manager/performance': typeof FranchiseManagerPerformanceRoute
   '/franchise-manager/reports': typeof FranchiseManagerReportsRoute
   '/franchise-manager/royalties': typeof FranchiseManagerRoyaltiesRoute
+  '/franchise-manager/settings': typeof FranchiseManagerSettingsRoute
   '/franchise-manager/territories': typeof FranchiseManagerTerritoriesRoute
   '/franchise-manager/': typeof FranchiseManagerIndexRoute
 }
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/franchise-manager/performance'
     | '/franchise-manager/reports'
     | '/franchise-manager/royalties'
+    | '/franchise-manager/settings'
     | '/franchise-manager/territories'
     | '/franchise-manager/'
   fileRoutesByTo: FileRoutesByTo
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/franchise-manager/performance'
     | '/franchise-manager/reports'
     | '/franchise-manager/royalties'
+    | '/franchise-manager/settings'
     | '/franchise-manager/territories'
     | '/franchise-manager'
   id:
@@ -211,6 +223,7 @@ export interface FileRouteTypes {
     | '/franchise-manager/performance'
     | '/franchise-manager/reports'
     | '/franchise-manager/royalties'
+    | '/franchise-manager/settings'
     | '/franchise-manager/territories'
     | '/franchise-manager/'
   fileRoutesById: FileRoutesById
@@ -320,6 +333,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FranchiseManagerRoyaltiesRouteImport
       parentRoute: typeof FranchiseManagerRoute
     }
+    '/franchise-manager/settings': {
+      id: '/franchise-manager/settings'
+      path: '/settings'
+      fullPath: '/franchise-manager/settings'
+      preLoaderRoute: typeof FranchiseManagerSettingsRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
     '/franchise-manager/territories': {
       id: '/franchise-manager/territories'
       path: '/territories'
@@ -342,6 +362,7 @@ interface FranchiseManagerRouteChildren {
   FranchiseManagerPerformanceRoute: typeof FranchiseManagerPerformanceRoute
   FranchiseManagerReportsRoute: typeof FranchiseManagerReportsRoute
   FranchiseManagerRoyaltiesRoute: typeof FranchiseManagerRoyaltiesRoute
+  FranchiseManagerSettingsRoute: typeof FranchiseManagerSettingsRoute
   FranchiseManagerTerritoriesRoute: typeof FranchiseManagerTerritoriesRoute
   FranchiseManagerIndexRoute: typeof FranchiseManagerIndexRoute
 }
@@ -358,6 +379,7 @@ const FranchiseManagerRouteChildren: FranchiseManagerRouteChildren = {
   FranchiseManagerPerformanceRoute: FranchiseManagerPerformanceRoute,
   FranchiseManagerReportsRoute: FranchiseManagerReportsRoute,
   FranchiseManagerRoyaltiesRoute: FranchiseManagerRoyaltiesRoute,
+  FranchiseManagerSettingsRoute: FranchiseManagerSettingsRoute,
   FranchiseManagerTerritoriesRoute: FranchiseManagerTerritoriesRoute,
   FranchiseManagerIndexRoute: FranchiseManagerIndexRoute,
 }
