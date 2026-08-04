@@ -291,18 +291,20 @@ function FranchisesPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            {[
-              ["commission_rate", "Commission rate (%)"],
-              ["royalty_rate", "Royalty rate (%)"],
-              ["pricing_variation", "Pricing variation (%)"],
-            ].map(([key, label]) => (
+            {(
+              [
+                ["commission_rate", "Commission rate (%)"],
+                ["royalty_rate", "Royalty rate (%)"],
+                ["pricing_variation", "Pricing variation (%)"],
+              ] as const
+            ).map(([key, label]) => (
               <div key={key} className="space-y-2">
                 <Label htmlFor={key}>{label}</Label>
                 <Input
                   id={key}
                   type="number"
                   step="0.1"
-                  value={form[key as "commission_rate"]}
+                  value={form[key]}
                   onChange={(e) =>
                     setForm((prev) => ({ ...prev, [key]: Number(e.target.value) }))
                   }
