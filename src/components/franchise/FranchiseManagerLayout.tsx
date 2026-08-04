@@ -47,7 +47,7 @@ const NAV: {
   { to: "/franchise-manager/notifications", label: "Notifications", icon: Bell },
   { to: "/franchise-manager/reports", label: "Reports & Audit", icon: FileText },
   { to: "/franchise-manager/settings", label: "Settings", icon: Settings },
-] as const;
+];
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
