@@ -10,33 +10,227 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FranchiseManagerRouteImport } from './routes/franchise-manager'
+import { Route as FranchiseManagerIndexRouteImport } from './routes/franchise-manager.index'
+import { Route as FranchiseManagerApplicationsRouteImport } from './routes/franchise-manager.applications'
+import { Route as FranchiseManagerComplianceRouteImport } from './routes/franchise-manager.compliance'
+import { Route as FranchiseManagerContractsRouteImport } from './routes/franchise-manager.contracts'
+import { Route as FranchiseManagerDocumentsRouteImport } from './routes/franchise-manager.documents'
+import { Route as FranchiseManagerEscalationsRouteImport } from './routes/franchise-manager.escalations'
+import { Route as FranchiseManagerFranchisesRouteImport } from './routes/franchise-manager.franchises'
+import { Route as FranchiseManagerFraudRouteImport } from './routes/franchise-manager.fraud'
+import { Route as FranchiseManagerNotificationsRouteImport } from './routes/franchise-manager.notifications'
+import { Route as FranchiseManagerPerformanceRouteImport } from './routes/franchise-manager.performance'
+import { Route as FranchiseManagerReportsRouteImport } from './routes/franchise-manager.reports'
+import { Route as FranchiseManagerRoyaltiesRouteImport } from './routes/franchise-manager.royalties'
+import { Route as FranchiseManagerSettingsRouteImport } from './routes/franchise-manager.settings'
+import { Route as FranchiseManagerTerritoriesRouteImport } from './routes/franchise-manager.territories'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FranchiseManagerRoute = FranchiseManagerRouteImport.update({
+  id: '/franchise-manager',
+  path: '/franchise-manager',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FranchiseManagerIndexRoute = FranchiseManagerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FranchiseManagerRoute,
+} as any)
+const FranchiseManagerApplicationsRoute =
+  FranchiseManagerApplicationsRouteImport.update({
+    id: '/applications',
+    path: '/applications',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
+const FranchiseManagerComplianceRoute =
+  FranchiseManagerComplianceRouteImport.update({
+    id: '/compliance',
+    path: '/compliance',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
+const FranchiseManagerContractsRoute =
+  FranchiseManagerContractsRouteImport.update({
+    id: '/contracts',
+    path: '/contracts',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
+const FranchiseManagerDocumentsRoute =
+  FranchiseManagerDocumentsRouteImport.update({
+    id: '/documents',
+    path: '/documents',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
+const FranchiseManagerEscalationsRoute =
+  FranchiseManagerEscalationsRouteImport.update({
+    id: '/escalations',
+    path: '/escalations',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
+const FranchiseManagerFranchisesRoute =
+  FranchiseManagerFranchisesRouteImport.update({
+    id: '/franchises',
+    path: '/franchises',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
+const FranchiseManagerFraudRoute = FranchiseManagerFraudRouteImport.update({
+  id: '/fraud',
+  path: '/fraud',
+  getParentRoute: () => FranchiseManagerRoute,
+} as any)
+const FranchiseManagerNotificationsRoute =
+  FranchiseManagerNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
+const FranchiseManagerPerformanceRoute =
+  FranchiseManagerPerformanceRouteImport.update({
+    id: '/performance',
+    path: '/performance',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
+const FranchiseManagerReportsRoute = FranchiseManagerReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => FranchiseManagerRoute,
+} as any)
+const FranchiseManagerRoyaltiesRoute =
+  FranchiseManagerRoyaltiesRouteImport.update({
+    id: '/royalties',
+    path: '/royalties',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
+const FranchiseManagerSettingsRoute =
+  FranchiseManagerSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
+const FranchiseManagerTerritoriesRoute =
+  FranchiseManagerTerritoriesRouteImport.update({
+    id: '/territories',
+    path: '/territories',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/franchise-manager': typeof FranchiseManagerRouteWithChildren
+  '/franchise-manager/applications': typeof FranchiseManagerApplicationsRoute
+  '/franchise-manager/compliance': typeof FranchiseManagerComplianceRoute
+  '/franchise-manager/contracts': typeof FranchiseManagerContractsRoute
+  '/franchise-manager/documents': typeof FranchiseManagerDocumentsRoute
+  '/franchise-manager/escalations': typeof FranchiseManagerEscalationsRoute
+  '/franchise-manager/franchises': typeof FranchiseManagerFranchisesRoute
+  '/franchise-manager/fraud': typeof FranchiseManagerFraudRoute
+  '/franchise-manager/notifications': typeof FranchiseManagerNotificationsRoute
+  '/franchise-manager/performance': typeof FranchiseManagerPerformanceRoute
+  '/franchise-manager/reports': typeof FranchiseManagerReportsRoute
+  '/franchise-manager/royalties': typeof FranchiseManagerRoyaltiesRoute
+  '/franchise-manager/settings': typeof FranchiseManagerSettingsRoute
+  '/franchise-manager/territories': typeof FranchiseManagerTerritoriesRoute
+  '/franchise-manager/': typeof FranchiseManagerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/franchise-manager/applications': typeof FranchiseManagerApplicationsRoute
+  '/franchise-manager/compliance': typeof FranchiseManagerComplianceRoute
+  '/franchise-manager/contracts': typeof FranchiseManagerContractsRoute
+  '/franchise-manager/documents': typeof FranchiseManagerDocumentsRoute
+  '/franchise-manager/escalations': typeof FranchiseManagerEscalationsRoute
+  '/franchise-manager/franchises': typeof FranchiseManagerFranchisesRoute
+  '/franchise-manager/fraud': typeof FranchiseManagerFraudRoute
+  '/franchise-manager/notifications': typeof FranchiseManagerNotificationsRoute
+  '/franchise-manager/performance': typeof FranchiseManagerPerformanceRoute
+  '/franchise-manager/reports': typeof FranchiseManagerReportsRoute
+  '/franchise-manager/royalties': typeof FranchiseManagerRoyaltiesRoute
+  '/franchise-manager/settings': typeof FranchiseManagerSettingsRoute
+  '/franchise-manager/territories': typeof FranchiseManagerTerritoriesRoute
+  '/franchise-manager': typeof FranchiseManagerIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/franchise-manager': typeof FranchiseManagerRouteWithChildren
+  '/franchise-manager/applications': typeof FranchiseManagerApplicationsRoute
+  '/franchise-manager/compliance': typeof FranchiseManagerComplianceRoute
+  '/franchise-manager/contracts': typeof FranchiseManagerContractsRoute
+  '/franchise-manager/documents': typeof FranchiseManagerDocumentsRoute
+  '/franchise-manager/escalations': typeof FranchiseManagerEscalationsRoute
+  '/franchise-manager/franchises': typeof FranchiseManagerFranchisesRoute
+  '/franchise-manager/fraud': typeof FranchiseManagerFraudRoute
+  '/franchise-manager/notifications': typeof FranchiseManagerNotificationsRoute
+  '/franchise-manager/performance': typeof FranchiseManagerPerformanceRoute
+  '/franchise-manager/reports': typeof FranchiseManagerReportsRoute
+  '/franchise-manager/royalties': typeof FranchiseManagerRoyaltiesRoute
+  '/franchise-manager/settings': typeof FranchiseManagerSettingsRoute
+  '/franchise-manager/territories': typeof FranchiseManagerTerritoriesRoute
+  '/franchise-manager/': typeof FranchiseManagerIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/franchise-manager'
+    | '/franchise-manager/applications'
+    | '/franchise-manager/compliance'
+    | '/franchise-manager/contracts'
+    | '/franchise-manager/documents'
+    | '/franchise-manager/escalations'
+    | '/franchise-manager/franchises'
+    | '/franchise-manager/fraud'
+    | '/franchise-manager/notifications'
+    | '/franchise-manager/performance'
+    | '/franchise-manager/reports'
+    | '/franchise-manager/royalties'
+    | '/franchise-manager/settings'
+    | '/franchise-manager/territories'
+    | '/franchise-manager/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/franchise-manager/applications'
+    | '/franchise-manager/compliance'
+    | '/franchise-manager/contracts'
+    | '/franchise-manager/documents'
+    | '/franchise-manager/escalations'
+    | '/franchise-manager/franchises'
+    | '/franchise-manager/fraud'
+    | '/franchise-manager/notifications'
+    | '/franchise-manager/performance'
+    | '/franchise-manager/reports'
+    | '/franchise-manager/royalties'
+    | '/franchise-manager/settings'
+    | '/franchise-manager/territories'
+    | '/franchise-manager'
+  id:
+    | '__root__'
+    | '/'
+    | '/franchise-manager'
+    | '/franchise-manager/applications'
+    | '/franchise-manager/compliance'
+    | '/franchise-manager/contracts'
+    | '/franchise-manager/documents'
+    | '/franchise-manager/escalations'
+    | '/franchise-manager/franchises'
+    | '/franchise-manager/fraud'
+    | '/franchise-manager/notifications'
+    | '/franchise-manager/performance'
+    | '/franchise-manager/reports'
+    | '/franchise-manager/royalties'
+    | '/franchise-manager/settings'
+    | '/franchise-manager/territories'
+    | '/franchise-manager/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FranchiseManagerRoute: typeof FranchiseManagerRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +242,155 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/franchise-manager': {
+      id: '/franchise-manager'
+      path: '/franchise-manager'
+      fullPath: '/franchise-manager'
+      preLoaderRoute: typeof FranchiseManagerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/franchise-manager/': {
+      id: '/franchise-manager/'
+      path: '/'
+      fullPath: '/franchise-manager/'
+      preLoaderRoute: typeof FranchiseManagerIndexRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/applications': {
+      id: '/franchise-manager/applications'
+      path: '/applications'
+      fullPath: '/franchise-manager/applications'
+      preLoaderRoute: typeof FranchiseManagerApplicationsRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/compliance': {
+      id: '/franchise-manager/compliance'
+      path: '/compliance'
+      fullPath: '/franchise-manager/compliance'
+      preLoaderRoute: typeof FranchiseManagerComplianceRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/contracts': {
+      id: '/franchise-manager/contracts'
+      path: '/contracts'
+      fullPath: '/franchise-manager/contracts'
+      preLoaderRoute: typeof FranchiseManagerContractsRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/documents': {
+      id: '/franchise-manager/documents'
+      path: '/documents'
+      fullPath: '/franchise-manager/documents'
+      preLoaderRoute: typeof FranchiseManagerDocumentsRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/escalations': {
+      id: '/franchise-manager/escalations'
+      path: '/escalations'
+      fullPath: '/franchise-manager/escalations'
+      preLoaderRoute: typeof FranchiseManagerEscalationsRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/franchises': {
+      id: '/franchise-manager/franchises'
+      path: '/franchises'
+      fullPath: '/franchise-manager/franchises'
+      preLoaderRoute: typeof FranchiseManagerFranchisesRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/fraud': {
+      id: '/franchise-manager/fraud'
+      path: '/fraud'
+      fullPath: '/franchise-manager/fraud'
+      preLoaderRoute: typeof FranchiseManagerFraudRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/notifications': {
+      id: '/franchise-manager/notifications'
+      path: '/notifications'
+      fullPath: '/franchise-manager/notifications'
+      preLoaderRoute: typeof FranchiseManagerNotificationsRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/performance': {
+      id: '/franchise-manager/performance'
+      path: '/performance'
+      fullPath: '/franchise-manager/performance'
+      preLoaderRoute: typeof FranchiseManagerPerformanceRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/reports': {
+      id: '/franchise-manager/reports'
+      path: '/reports'
+      fullPath: '/franchise-manager/reports'
+      preLoaderRoute: typeof FranchiseManagerReportsRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/royalties': {
+      id: '/franchise-manager/royalties'
+      path: '/royalties'
+      fullPath: '/franchise-manager/royalties'
+      preLoaderRoute: typeof FranchiseManagerRoyaltiesRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/settings': {
+      id: '/franchise-manager/settings'
+      path: '/settings'
+      fullPath: '/franchise-manager/settings'
+      preLoaderRoute: typeof FranchiseManagerSettingsRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
+    '/franchise-manager/territories': {
+      id: '/franchise-manager/territories'
+      path: '/territories'
+      fullPath: '/franchise-manager/territories'
+      preLoaderRoute: typeof FranchiseManagerTerritoriesRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
   }
 }
 
+interface FranchiseManagerRouteChildren {
+  FranchiseManagerApplicationsRoute: typeof FranchiseManagerApplicationsRoute
+  FranchiseManagerComplianceRoute: typeof FranchiseManagerComplianceRoute
+  FranchiseManagerContractsRoute: typeof FranchiseManagerContractsRoute
+  FranchiseManagerDocumentsRoute: typeof FranchiseManagerDocumentsRoute
+  FranchiseManagerEscalationsRoute: typeof FranchiseManagerEscalationsRoute
+  FranchiseManagerFranchisesRoute: typeof FranchiseManagerFranchisesRoute
+  FranchiseManagerFraudRoute: typeof FranchiseManagerFraudRoute
+  FranchiseManagerNotificationsRoute: typeof FranchiseManagerNotificationsRoute
+  FranchiseManagerPerformanceRoute: typeof FranchiseManagerPerformanceRoute
+  FranchiseManagerReportsRoute: typeof FranchiseManagerReportsRoute
+  FranchiseManagerRoyaltiesRoute: typeof FranchiseManagerRoyaltiesRoute
+  FranchiseManagerSettingsRoute: typeof FranchiseManagerSettingsRoute
+  FranchiseManagerTerritoriesRoute: typeof FranchiseManagerTerritoriesRoute
+  FranchiseManagerIndexRoute: typeof FranchiseManagerIndexRoute
+}
+
+const FranchiseManagerRouteChildren: FranchiseManagerRouteChildren = {
+  FranchiseManagerApplicationsRoute: FranchiseManagerApplicationsRoute,
+  FranchiseManagerComplianceRoute: FranchiseManagerComplianceRoute,
+  FranchiseManagerContractsRoute: FranchiseManagerContractsRoute,
+  FranchiseManagerDocumentsRoute: FranchiseManagerDocumentsRoute,
+  FranchiseManagerEscalationsRoute: FranchiseManagerEscalationsRoute,
+  FranchiseManagerFranchisesRoute: FranchiseManagerFranchisesRoute,
+  FranchiseManagerFraudRoute: FranchiseManagerFraudRoute,
+  FranchiseManagerNotificationsRoute: FranchiseManagerNotificationsRoute,
+  FranchiseManagerPerformanceRoute: FranchiseManagerPerformanceRoute,
+  FranchiseManagerReportsRoute: FranchiseManagerReportsRoute,
+  FranchiseManagerRoyaltiesRoute: FranchiseManagerRoyaltiesRoute,
+  FranchiseManagerSettingsRoute: FranchiseManagerSettingsRoute,
+  FranchiseManagerTerritoriesRoute: FranchiseManagerTerritoriesRoute,
+  FranchiseManagerIndexRoute: FranchiseManagerIndexRoute,
+}
+
+const FranchiseManagerRouteWithChildren =
+  FranchiseManagerRoute._addFileChildren(FranchiseManagerRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FranchiseManagerRoute: FranchiseManagerRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
