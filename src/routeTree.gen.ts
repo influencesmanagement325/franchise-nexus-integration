@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as FranchiseManagerRouteImport } from './routes/franchise-manager'
 import { Route as FranchiseManagerIndexRouteImport } from './routes/franchise-manager.index'
 import { Route as FranchiseManagerApplicationsRouteImport } from './routes/franchise-manager.applications'
+import { Route as FranchiseManagerFranchisesRouteImport } from './routes/franchise-manager.franchises'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -35,16 +36,24 @@ const FranchiseManagerApplicationsRoute =
     path: '/applications',
     getParentRoute: () => FranchiseManagerRoute,
   } as any)
+const FranchiseManagerFranchisesRoute =
+  FranchiseManagerFranchisesRouteImport.update({
+    id: '/franchises',
+    path: '/franchises',
+    getParentRoute: () => FranchiseManagerRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/franchise-manager': typeof FranchiseManagerRouteWithChildren
   '/franchise-manager/applications': typeof FranchiseManagerApplicationsRoute
+  '/franchise-manager/franchises': typeof FranchiseManagerFranchisesRoute
   '/franchise-manager/': typeof FranchiseManagerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/franchise-manager/applications': typeof FranchiseManagerApplicationsRoute
+  '/franchise-manager/franchises': typeof FranchiseManagerFranchisesRoute
   '/franchise-manager': typeof FranchiseManagerIndexRoute
 }
 export interface FileRoutesById {
@@ -52,6 +61,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/franchise-manager': typeof FranchiseManagerRouteWithChildren
   '/franchise-manager/applications': typeof FranchiseManagerApplicationsRoute
+  '/franchise-manager/franchises': typeof FranchiseManagerFranchisesRoute
   '/franchise-manager/': typeof FranchiseManagerIndexRoute
 }
 export interface FileRouteTypes {
@@ -60,14 +70,20 @@ export interface FileRouteTypes {
     | '/'
     | '/franchise-manager'
     | '/franchise-manager/applications'
+    | '/franchise-manager/franchises'
     | '/franchise-manager/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/franchise-manager/applications' | '/franchise-manager'
+  to:
+    | '/'
+    | '/franchise-manager/applications'
+    | '/franchise-manager/franchises'
+    | '/franchise-manager'
   id:
     | '__root__'
     | '/'
     | '/franchise-manager'
     | '/franchise-manager/applications'
+    | '/franchise-manager/franchises'
     | '/franchise-manager/'
   fileRoutesById: FileRoutesById
 }
@@ -106,16 +122,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FranchiseManagerApplicationsRouteImport
       parentRoute: typeof FranchiseManagerRoute
     }
+    '/franchise-manager/franchises': {
+      id: '/franchise-manager/franchises'
+      path: '/franchises'
+      fullPath: '/franchise-manager/franchises'
+      preLoaderRoute: typeof FranchiseManagerFranchisesRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
   }
 }
 
 interface FranchiseManagerRouteChildren {
   FranchiseManagerApplicationsRoute: typeof FranchiseManagerApplicationsRoute
+  FranchiseManagerFranchisesRoute: typeof FranchiseManagerFranchisesRoute
   FranchiseManagerIndexRoute: typeof FranchiseManagerIndexRoute
 }
 
 const FranchiseManagerRouteChildren: FranchiseManagerRouteChildren = {
   FranchiseManagerApplicationsRoute: FranchiseManagerApplicationsRoute,
+  FranchiseManagerFranchisesRoute: FranchiseManagerFranchisesRoute,
   FranchiseManagerIndexRoute: FranchiseManagerIndexRoute,
 }
 
