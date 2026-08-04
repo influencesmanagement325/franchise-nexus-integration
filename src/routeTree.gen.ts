@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FranchiseManagerRouteImport } from './routes/franchise-manager'
+import { Route as FranchiseManagerIndexRouteImport } from './routes/franchise-manager.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,38 @@ const FranchiseManagerRoute = FranchiseManagerRouteImport.update({
   path: '/franchise-manager',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FranchiseManagerIndexRoute = FranchiseManagerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FranchiseManagerRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/franchise-manager': typeof FranchiseManagerRoute
+  '/franchise-manager': typeof FranchiseManagerRouteWithChildren
+  '/franchise-manager/': typeof FranchiseManagerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/franchise-manager': typeof FranchiseManagerRoute
+  '/franchise-manager': typeof FranchiseManagerIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/franchise-manager': typeof FranchiseManagerRoute
+  '/franchise-manager': typeof FranchiseManagerRouteWithChildren
+  '/franchise-manager/': typeof FranchiseManagerIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/franchise-manager'
+  fullPaths: '/' | '/franchise-manager' | '/franchise-manager/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/franchise-manager'
-  id: '__root__' | '/' | '/franchise-manager'
+  id: '__root__' | '/' | '/franchise-manager' | '/franchise-manager/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  FranchiseManagerRoute: typeof FranchiseManagerRoute
+  FranchiseManagerRoute: typeof FranchiseManagerRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +73,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FranchiseManagerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/franchise-manager/': {
+      id: '/franchise-manager/'
+      path: '/'
+      fullPath: '/franchise-manager/'
+      preLoaderRoute: typeof FranchiseManagerIndexRouteImport
+      parentRoute: typeof FranchiseManagerRoute
+    }
   }
 }
 
+interface FranchiseManagerRouteChildren {
+  FranchiseManagerIndexRoute: typeof FranchiseManagerIndexRoute
+}
+
+const FranchiseManagerRouteChildren: FranchiseManagerRouteChildren = {
+  FranchiseManagerIndexRoute: FranchiseManagerIndexRoute,
+}
+
+const FranchiseManagerRouteWithChildren =
+  FranchiseManagerRoute._addFileChildren(FranchiseManagerRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  FranchiseManagerRoute: FranchiseManagerRoute,
+  FranchiseManagerRoute: FranchiseManagerRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
