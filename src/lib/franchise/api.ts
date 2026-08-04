@@ -174,3 +174,53 @@ export async function deleteFranchise(id: string) {
   const { error } = await supabase.from("franchises").delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
+
+/* ---------------------------------------------------------------------------
+ * Generic row helpers — used by every section of the module.
+ * ------------------------------------------------------------------------- */
+
+type FranchiseTable =
+  | "territories"
+  | "franchises"
+  | "franchise_applications"
+  | "franchise_performance"
+  | "franchise_compliance"
+  | "franchise_fraud_alerts"
+  | "franchise_escalations"
+  | "franchise_royalties"
+  | "franchise_contracts"
+  | "franchise_documents"
+  | "franchise_notifications"
+  | "franchise_settings";
+
+export async function updateRow(
+  table: FranchiseTable,
+  id: string,
+  patch: Record<string, unknown>,
+) {
+  const query = supabase.from(table) as unknown as {
+    update: (p: Record<string, unknown>) => {
+      eq: (col: string, val: string) => PromiseLike<{ error: { message: string } | null }>;
+    };
+  };
+  const { error } = await query.update(patch).eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
+export async function insertRow(table: FranchiseTable, payload: Record<string, unknown>) {
+  const query = supabase.from(table) as unknown as {
+    insert: (p: Record<string, unknown>) => PromiseLike<{ error: { message: string } | null }>;
+  };
+  const { error } = await query.insert(payload);
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteRow(table: FranchiseTable, id: string) {
+  const query = supabase.from(table) as unknown as {
+    delete: () => {
+      eq: (col: string, val: string) => PromiseLike<{ error: { message: string } | null }>;
+    };
+  };
+  const { error } = await query.delete().eq("id", id);
+  if (error) throw new Error(error.message);
+}
