@@ -143,6 +143,15 @@ export async function writeAuditLog(entry: TablesInsert<"franchise_audit_logs">)
   if (error) throw new Error(error.message);
 }
 
+export async function approveApplication(id: string, reviewNotes: string) {
+  const { data, error } = await supabase.rpc("fm_approve_application", {
+    _application_id: id,
+    ...(reviewNotes ? { _review_notes: reviewNotes } : {}),
+  });
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 /** Generic mutation helper used across the module. */
 export function useFranchiseMutation<TVars>(
   mutationFn: (vars: TVars) => Promise<unknown>,

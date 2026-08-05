@@ -2,13 +2,14 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Search, FileText } from "lucide-react";
+import { Download, Search, FileText } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageHeader } from "@/components/franchise/PageHeader";
-import { auditLogsQuery, franchisesQuery } from "@/lib/franchise/api";
-import { dateTime, inr, num, pct, periodLabel, shortDate, titleCase } from "@/lib/franchise/format";
+import { auditLogsQuery } from "@/lib/franchise/api";
+import { dateTime, titleCase } from "@/lib/franchise/format";
 
 export const Route = createFileRoute("/franchise-manager/reports")({
   head: () => ({
@@ -24,11 +25,7 @@ export const Route = createFileRoute("/franchise-manager/reports")({
 
 function Page() {
   const { data: rows = [] } = useQuery(auditLogsQuery);
-  const { data: franchises = [] } = useQuery(franchisesQuery);
   const [search, setSearch] = useState("");
-
-  const nameOf = (id: string | null | undefined) =>
-    franchises.find((f) => f.id === id)?.name ?? "Network";
 
   const filtered = useMemo(
     () =>
@@ -38,12 +35,20 @@ function Page() {
     [rows, search],
   );
 
+  const exportAudit = () => {
+    const escape = (value: unknown) => `"${String(value ?? "").replaceAll('"', '""')}"`;
+    const csv = [["Actor", "Action", "Entity", "Details", "Old value", "New value", "Result", "Created"], ...filtered.map((r) => [r.actor, r.action, `${r.entity_type}:${r.entity_id ?? ""}`, r.details, r.old_value, r.new_value, r.result, r.created_at])].map((row) => row.map(escape).join(",")).join("\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    const anchor = document.createElement("a"); anchor.href = url; anchor.download = `franchise-audit-${new Date().toISOString().slice(0, 10)}.csv`; anchor.click(); URL.revokeObjectURL(url);
+  };
+
   return (
     <>
       <PageHeader
         icon={FileText}
         title="Reports & Audit Trail"
         description="Immutable audit log of every action taken inside the Franchise Manager module."
+        actions={<Button size="sm" variant="outline" onClick={exportAudit}><Download className="mr-2 size-4" />Export audit</Button>}
       />
 
       <Card className="glass-panel shadow-card">
@@ -69,6 +74,8 @@ function Page() {
                   <TableHead>Action</TableHead>
                   <TableHead>Entity</TableHead>
                   <TableHead>Details</TableHead>
+                  <TableHead>Change</TableHead>
+                  <TableHead>Result</TableHead>
                   <TableHead>When</TableHead>
                   
                 </TableRow>
@@ -87,13 +94,15 @@ function Page() {
                     <TableCell className="max-w-[22rem] truncate text-sm">{titleCase(r.action)}</TableCell>
                     <TableCell className="max-w-[22rem] truncate text-sm">{`${titleCase(r.entity_type)} • ${r.entity_id}`}</TableCell>
                     <TableCell className="max-w-[22rem] truncate text-sm">{r.details}</TableCell>
+                    <TableCell className="text-sm">{r.old_value || r.new_value ? `${r.old_value ?? "—"} → ${r.new_value ?? "—"}` : "—"}</TableCell>
+                    <TableCell><span className="text-sm capitalize">{r.result}</span></TableCell>
                     <TableCell className="max-w-[22rem] truncate text-sm">{dateTime(r.created_at)}</TableCell>
                     
                   </motion.tr>
                 ))}
                 {filtered.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
+                    <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">
                       Nothing to show yet.
                     </TableCell>
                   </TableRow>

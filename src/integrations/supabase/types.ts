@@ -20,6 +20,7 @@ export type Database = {
           business_name: string
           business_type: string
           city: string
+          clarification_message: string | null
           code: string
           country: string
           created_at: string
@@ -41,6 +42,7 @@ export type Database = {
           business_name: string
           business_type?: string
           city: string
+          clarification_message?: string | null
           code: string
           country?: string
           created_at?: string
@@ -62,6 +64,7 @@ export type Database = {
           business_name?: string
           business_type?: string
           city?: string
+          clarification_message?: string | null
           code?: string
           country?: string
           created_at?: string
@@ -89,6 +92,9 @@ export type Database = {
           entity_id: string | null
           entity_type: string
           id: string
+          new_value: string | null
+          old_value: string | null
+          result: string
         }
         Insert: {
           action: string
@@ -98,6 +104,9 @@ export type Database = {
           entity_id?: string | null
           entity_type: string
           id?: string
+          new_value?: string | null
+          old_value?: string | null
+          result?: string
         }
         Update: {
           action?: string
@@ -107,6 +116,9 @@ export type Database = {
           entity_id?: string | null
           entity_type?: string
           id?: string
+          new_value?: string | null
+          old_value?: string | null
+          result?: string
         }
         Relationships: []
       }
@@ -331,6 +343,9 @@ export type Database = {
           detected_at: string
           franchise_id: string | null
           id: string
+          patterns: string[]
+          recommendation: string
+          review_notes: string | null
           risk_score: number
           severity: string
           status: string
@@ -343,6 +358,9 @@ export type Database = {
           detected_at?: string
           franchise_id?: string | null
           id?: string
+          patterns?: string[]
+          recommendation?: string
+          review_notes?: string | null
           risk_score?: number
           severity?: string
           status?: string
@@ -355,6 +373,9 @@ export type Database = {
           detected_at?: string
           franchise_id?: string | null
           id?: string
+          patterns?: string[]
+          recommendation?: string
+          review_notes?: string | null
           risk_score?: number
           severity?: string
           status?: string
@@ -540,15 +561,19 @@ export type Database = {
       }
       franchises: {
         Row: {
+          active_resellers: number
           city: string
           code: string
           commission_rate: number
+          complaint_rate: number
+          conversion_rate: number
           created_at: string
           email: string
           health: string
           id: string
           joined_date: string
           last_active: string
+          lead_quality: number
           lead_routing: boolean
           name: string
           owner_name: string
@@ -556,23 +581,29 @@ export type Database = {
           phone: string
           pricing_variation: number
           royalty_rate: number
+          sla_adherence: number
           state: string
           status: string
+          suspension_reason: string | null
           territory: string
           territory_id: string | null
           total_sales: number
           updated_at: string
         }
         Insert: {
+          active_resellers?: number
           city?: string
           code: string
           commission_rate?: number
+          complaint_rate?: number
+          conversion_rate?: number
           created_at?: string
           email: string
           health?: string
           id?: string
           joined_date?: string
           last_active?: string
+          lead_quality?: number
           lead_routing?: boolean
           name: string
           owner_name: string
@@ -580,23 +611,29 @@ export type Database = {
           phone: string
           pricing_variation?: number
           royalty_rate?: number
+          sla_adherence?: number
           state?: string
           status?: string
+          suspension_reason?: string | null
           territory?: string
           territory_id?: string | null
           total_sales?: number
           updated_at?: string
         }
         Update: {
+          active_resellers?: number
           city?: string
           code?: string
           commission_rate?: number
+          complaint_rate?: number
+          conversion_rate?: number
           created_at?: string
           email?: string
           health?: string
           id?: string
           joined_date?: string
           last_active?: string
+          lead_quality?: number
           lead_routing?: boolean
           name?: string
           owner_name?: string
@@ -604,8 +641,10 @@ export type Database = {
           phone?: string
           pricing_variation?: number
           royalty_rate?: number
+          sla_adherence?: number
           state?: string
           status?: string
+          suspension_reason?: string | null
           territory?: string
           territory_id?: string | null
           total_sales?: number
@@ -623,6 +662,7 @@ export type Database = {
       }
       territories: {
         Row: {
+          business_density: string
           city: string
           code: string
           country: string
@@ -632,6 +672,7 @@ export type Database = {
           lat: number
           lng: number
           name: string
+          overlapping_with: string[]
           population: number
           potential_score: number
           region: string
@@ -640,6 +681,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          business_density?: string
           city: string
           code: string
           country?: string
@@ -649,6 +691,7 @@ export type Database = {
           lat?: number
           lng?: number
           name: string
+          overlapping_with?: string[]
           population?: number
           potential_score?: number
           region: string
@@ -657,6 +700,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          business_density?: string
           city?: string
           code?: string
           country?: string
@@ -666,6 +710,7 @@ export type Database = {
           lat?: number
           lng?: number
           name?: string
+          overlapping_with?: string[]
           population?: number
           potential_score?: number
           region?: string
@@ -680,7 +725,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      fm_approve_application: {
+        Args: { _application_id: string; _review_notes?: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

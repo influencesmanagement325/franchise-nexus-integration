@@ -2,14 +2,20 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Search, Shield } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, Search, Shield } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageHeader } from "@/components/franchise/PageHeader";
 import { StatusPill } from "@/components/franchise/StatusPill";
-import { complianceQuery, franchisesQuery } from "@/lib/franchise/api";
-import { dateTime, inr, num, pct, periodLabel, shortDate, titleCase } from "@/lib/franchise/format";
+import { complianceQuery, franchiseKeys, franchisesQuery, insertRow, updateRow, useFranchiseMutation, writeAuditLog } from "@/lib/franchise/api";
+import type { FranchiseCompliance } from "@/lib/franchise/types";
+import { shortDate, titleCase } from "@/lib/franchise/format";
 
 export const Route = createFileRoute("/franchise-manager/compliance")({
   head: () => ({
@@ -27,6 +33,21 @@ function Page() {
   const { data: rows = [] } = useQuery(complianceQuery);
   const { data: franchises = [] } = useQuery(franchisesQuery);
   const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<FranchiseCompliance | null>(null);
+  const [mode, setMode] = useState<"warn" | "escalate">("warn");
+  const [message, setMessage] = useState("");
+
+  const act = useFranchiseMutation(async () => {
+    if (!selected || !message.trim()) throw new Error("A reason or message is required.");
+    const franchise = franchises.find((f) => f.id === selected.franchise_id);
+    if (mode === "warn") {
+      await updateRow("franchise_compliance", selected.id, { status: "warned", notes: message, last_checked: new Date().toISOString().slice(0, 10) });
+    } else {
+      await updateRow("franchise_compliance", selected.id, { status: "escalated", notes: message });
+      await insertRow("franchise_escalations", { franchise_id: selected.franchise_id, title: selected.requirement, category: "compliance", priority: selected.severity, status: "open", raised_by: "Franchise Manager", assigned_to: "Legal Team", resolution: message });
+    }
+    await writeAuditLog({ actor: "Franchise Manager", action: mode === "warn" ? "warning_issued" : "compliance_escalated", entity_type: "compliance", entity_id: franchise?.code ?? selected.id, details: message, old_value: selected.status, new_value: mode === "warn" ? "warned" : "escalated", result: "success" });
+  }, [franchiseKeys.all]);
 
   const nameOf = (id: string | null | undefined) =>
     franchises.find((f) => f.id === id)?.name ?? "Network";
@@ -72,6 +93,7 @@ function Page() {
                   <TableHead>Due</TableHead>
                   <TableHead>Last checked</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -90,11 +112,12 @@ function Page() {
                     <TableCell className="max-w-[22rem] truncate text-sm">{shortDate(r.due_date)}</TableCell>
                     <TableCell className="max-w-[22rem] truncate text-sm">{shortDate(r.last_checked)}</TableCell>
                     <TableCell><StatusPill value={r.status} /></TableCell>
+                    <TableCell><div className="flex justify-end gap-2"><Button size="sm" variant="outline" disabled={r.status === "resolved"} onClick={() => { setSelected(r); setMode("warn"); setMessage(""); }}><AlertTriangle className="mr-2 size-4" />Warn</Button><Button size="sm" variant="secondary" disabled={r.status === "resolved"} onClick={() => { setSelected(r); setMode("escalate"); setMessage(""); }}><ArrowUpRight className="mr-2 size-4" />Escalate</Button></div></TableCell>
                   </motion.tr>
                 ))}
                 {filtered.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">
+                    <TableCell colSpan={8} className="py-10 text-center text-muted-foreground">
                       Nothing to show yet.
                     </TableCell>
                   </TableRow>
@@ -104,6 +127,7 @@ function Page() {
           </div>
         </CardContent>
       </Card>
+      <Dialog open={!!selected} onOpenChange={(open) => !open && setSelected(null)}><DialogContent><DialogHeader><DialogTitle>{mode === "warn" ? "Issue warning" : "Escalate compliance issue"}</DialogTitle><DialogDescription>{selected?.requirement} — {nameOf(selected?.franchise_id)}</DialogDescription></DialogHeader><div className="space-y-2"><Label htmlFor="compliance-message">{mode === "warn" ? "Warning message" : "Escalation reason"}</Label><Textarea id="compliance-message" value={message} onChange={(e) => setMessage(e.target.value)} rows={4} /></div><DialogFooter><Button variant="outline" onClick={() => setSelected(null)}>Cancel</Button><Button disabled={act.isPending} onClick={() => act.mutate(undefined, { onSuccess: () => { toast.success(mode === "warn" ? "Warning issued" : "Issue escalated"); setSelected(null); }, onError: (e: Error) => toast.error(e.message) })}>{mode === "warn" ? "Send warning" : "Escalate to Legal"}</Button></DialogFooter></DialogContent></Dialog>
     </>
   );
 }

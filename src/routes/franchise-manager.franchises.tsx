@@ -68,6 +68,8 @@ function FranchisesPage() {
     pricing_variation: 0,
     lead_routing: true,
   });
+  const [suspendTarget, setSuspendTarget] = useState<Franchise | null>(null);
+  const [suspendReason, setSuspendReason] = useState("");
 
   const save = useFranchiseMutation(async (franchise: Franchise) => {
     await updateRow("franchises", franchise.id, {
@@ -87,13 +89,17 @@ function FranchisesPage() {
 
   const changeStatus = useFranchiseMutation(
     async ({ franchise, next }: { franchise: Franchise; next: string }) => {
-      await updateRow("franchises", franchise.id, { status: next });
+      if (next === "suspended" && !suspendReason.trim()) throw new Error("A suspension reason is required.");
+      await updateRow("franchises", franchise.id, { status: next, suspension_reason: next === "suspended" ? suspendReason : null });
       await writeAuditLog({
         actor: "Franchise Manager",
         action: `franchise_${next}`,
         entity_type: "franchise",
         entity_id: franchise.code,
-        details: `${franchise.name} status changed to ${next}`,
+        details: `${franchise.name} status changed to ${next}${suspendReason ? ` — ${suspendReason}` : ""}`,
+        old_value: franchise.status,
+        new_value: next,
+        result: "success",
       });
     },
     [franchiseKeys.all],
@@ -248,12 +254,7 @@ function FranchisesPage() {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() =>
-                      changeStatus.mutate(
-                        { franchise: f, next: "suspended" },
-                        { onSuccess: () => toast.success(`${f.name} suspended`) },
-                      )
-                    }
+                    onClick={() => { setSuspendTarget(f); setSuspendReason(""); }}
                   >
                     Suspend
                   </Button>
@@ -344,6 +345,14 @@ function FranchisesPage() {
               Save changes
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!suspendTarget} onOpenChange={(open) => !open && setSuspendTarget(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Suspend franchise</DialogTitle><DialogDescription>This immediately stops operations, lead routing and earnings for {suspendTarget?.name}.</DialogDescription></DialogHeader>
+          <div className="space-y-2"><Label htmlFor="suspend-reason">Reason</Label><Input id="suspend-reason" value={suspendReason} onChange={(e) => setSuspendReason(e.target.value)} placeholder="Mandatory suspension reason" /></div>
+          <DialogFooter><Button variant="outline" onClick={() => setSuspendTarget(null)}>Cancel</Button><Button variant="destructive" disabled={changeStatus.isPending} onClick={() => suspendTarget && changeStatus.mutate({ franchise: suspendTarget, next: "suspended" }, { onSuccess: () => { toast.success(`${suspendTarget.name} suspended`); setSuspendTarget(null); }, onError: (e: Error) => toast.error(e.message) })}>Confirm suspension</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </>
