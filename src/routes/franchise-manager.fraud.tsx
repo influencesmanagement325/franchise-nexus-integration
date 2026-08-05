@@ -15,7 +15,7 @@ import { PageHeader } from "@/components/franchise/PageHeader";
 import { StatusPill } from "@/components/franchise/StatusPill";
 import { franchiseKeys, fraudAlertsQuery, franchisesQuery, updateRow, useFranchiseMutation, writeAuditLog } from "@/lib/franchise/api";
 import type { FranchiseFraudAlert } from "@/lib/franchise/types";
-import { dateTime, inr, num, pct, periodLabel, shortDate, titleCase } from "@/lib/franchise/format";
+import { dateTime, titleCase } from "@/lib/franchise/format";
 
 export const Route = createFileRoute("/franchise-manager/fraud")({
   head: () => ({

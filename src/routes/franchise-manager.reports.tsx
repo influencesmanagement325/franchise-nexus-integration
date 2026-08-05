@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageHeader } from "@/components/franchise/PageHeader";
-import { auditLogsQuery, franchisesQuery } from "@/lib/franchise/api";
-import { dateTime, inr, num, pct, periodLabel, shortDate, titleCase } from "@/lib/franchise/format";
+import { auditLogsQuery } from "@/lib/franchise/api";
+import { dateTime, titleCase } from "@/lib/franchise/format";
 
 export const Route = createFileRoute("/franchise-manager/reports")({
   head: () => ({
@@ -25,11 +25,7 @@ export const Route = createFileRoute("/franchise-manager/reports")({
 
 function Page() {
   const { data: rows = [] } = useQuery(auditLogsQuery);
-  const { data: franchises = [] } = useQuery(franchisesQuery);
   const [search, setSearch] = useState("");
-
-  const nameOf = (id: string | null | undefined) =>
-    franchises.find((f) => f.id === id)?.name ?? "Network";
 
   const filtered = useMemo(
     () =>

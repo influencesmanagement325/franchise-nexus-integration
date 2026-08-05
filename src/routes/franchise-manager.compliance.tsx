@@ -15,7 +15,7 @@ import { PageHeader } from "@/components/franchise/PageHeader";
 import { StatusPill } from "@/components/franchise/StatusPill";
 import { complianceQuery, franchiseKeys, franchisesQuery, insertRow, updateRow, useFranchiseMutation, writeAuditLog } from "@/lib/franchise/api";
 import type { FranchiseCompliance } from "@/lib/franchise/types";
-import { dateTime, inr, num, pct, periodLabel, shortDate, titleCase } from "@/lib/franchise/format";
+import { shortDate, titleCase } from "@/lib/franchise/format";
 
 export const Route = createFileRoute("/franchise-manager/compliance")({
   head: () => ({
