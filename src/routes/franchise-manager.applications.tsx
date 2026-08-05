@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { CheckCircle2, ClipboardList, Search, ShieldCheck, XCircle } from "lucide-react";
+import { CheckCircle2, ClipboardList, MessageSquare, Search, ShieldCheck, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ import { StatusPill } from "@/components/franchise/StatusPill";
 import {
   applicationsQuery,
   franchiseKeys,
-  insertRow,
+  approveApplication,
   territoriesQuery,
   updateRow,
   useFranchiseMutation,
@@ -66,53 +66,17 @@ function ApplicationsQueue() {
   const [status, setStatus] = useState("all");
   const [selected, setSelected] = useState<FranchiseApplication | null>(null);
   const [notes, setNotes] = useState("");
+  const [decision, setDecision] = useState<"review" | "clarify">("review");
 
   const decide = useFranchiseMutation(
     async ({ app, approve }: { app: FranchiseApplication; approve: boolean }) => {
-      await updateRow("franchise_applications", app.id, {
-        status: approve ? "approved" : "rejected",
-        review_notes: notes || app.review_notes,
-      });
-
       if (approve) {
-        const territory = territories.find((t) => t.name === app.requested_territory);
-        if (territory && territory.status === "assigned") {
-          throw new Error(
-            `${territory.name} is already assigned. One territory can hold only one franchise.`,
-          );
-        }
-        await insertRow("franchises", {
-          code: app.code.replace("APP", "FR"),
-          name: app.business_name,
-          owner_name: app.owner_name,
-          email: app.email,
-          phone: app.phone,
-          status: "active",
-          territory_id: territory?.id ?? null,
-          territory: app.requested_territory,
-          state: app.state,
-          city: app.city,
-          commission_rate: 10,
-          royalty_rate: 8,
-          pricing_variation: 0,
-          total_sales: 0,
-          performance_score: 60,
-          health: "stable",
-          lead_routing: true,
-          joined_date: new Date().toISOString().slice(0, 10),
-        });
-        if (territory) {
-          await updateRow("territories", territory.id, { status: "assigned" });
-        }
+        await approveApplication(app.id, notes);
+      } else {
+        if (!notes.trim()) throw new Error("A rejection reason is required.");
+        await updateRow("franchise_applications", app.id, { status: "rejected", review_notes: notes });
+        await writeAuditLog({ actor: "Franchise Manager", action: "application_rejected", entity_type: "franchise_application", entity_id: app.code, details: `${app.business_name} — ${notes}`, old_value: "in_review", new_value: "rejected", result: "success" });
       }
-
-      await writeAuditLog({
-        actor: "Franchise Manager",
-        action: approve ? "application_approved" : "application_rejected",
-        entity_type: "franchise_application",
-        entity_id: app.code,
-        details: `${app.business_name} — ${notes || "no additional notes"}`,
-      });
     },
     [franchiseKeys.all],
   );
@@ -162,6 +126,21 @@ function ApplicationsQueue() {
       },
     );
   };
+
+  const requestClarification = () => {
+    if (!selected || !notes.trim()) return toast.error("A clarification message is required.");
+    decide.mutate(
+      { app: selected, approve: false },
+      {
+        onSuccess: () => undefined,
+      },
+    );
+  };
+
+  const clarify = useFranchiseMutation(async ({ app, message }: { app: FranchiseApplication; message: string }) => {
+    await updateRow("franchise_applications", app.id, { clarification_message: message });
+    await writeAuditLog({ actor: "Franchise Manager", action: "clarification_requested", entity_type: "franchise_application", entity_id: app.code, details: message, result: "pending" });
+  }, [franchiseKeys.applications(), franchiseKeys.audit()]);
 
   return (
     <>
@@ -294,10 +273,16 @@ function ApplicationsQueue() {
                           onClick={() => {
                             setSelected(app);
                             setNotes(app.review_notes ?? "");
+                            setDecision("review");
                           }}
                         >
                           Review
                         </Button>
+                        {app.status === "in_review" ? (
+                          <Button variant="outline" size="sm" onClick={() => { setSelected(app); setNotes(app.clarification_message ?? ""); setDecision("clarify"); }}>
+                            <MessageSquare className="mr-2 size-4" /> Clarify
+                          </Button>
+                        ) : null}
                       </div>
                     </TableCell>
                   </motion.tr>
@@ -347,18 +332,23 @@ function ApplicationsQueue() {
                 <StatusPill value={selected.status} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="review-notes">Reviewer notes</Label>
+                <Label htmlFor="review-notes">{decision === "clarify" ? "Clarification request" : "Reviewer notes"}</Label>
                 <Textarea
                   id="review-notes"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Document the reason for your decision…"
+                  placeholder={decision === "clarify" ? "What information do you need from the applicant?" : "Document the reason for your decision…"}
                   rows={3}
                 />
               </div>
             </div>
           ) : null}
           <DialogFooter className="gap-2">
+            {decision === "clarify" ? (
+              <Button disabled={clarify.isPending} onClick={() => selected && clarify.mutate({ app: selected, message: notes }, { onSuccess: () => { toast.success("Clarification requested"); setSelected(null); setNotes(""); }, onError: (e: Error) => toast.error(e.message) })}>
+                <MessageSquare className="mr-2 size-4" /> Send request
+              </Button>
+            ) : <>
             <Button
               variant="outline"
               onClick={() => handleDecision(false)}
@@ -374,6 +364,7 @@ function ApplicationsQueue() {
               <CheckCircle2 className="mr-2 size-4" />
               Approve & create franchise
             </Button>
+            </>}
           </DialogFooter>
         </DialogContent>
       </Dialog>
