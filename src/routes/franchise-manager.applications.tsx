@@ -32,7 +32,6 @@ import {
   applicationsQuery,
   franchiseKeys,
   approveApplication,
-  territoriesQuery,
   updateRow,
   useFranchiseMutation,
   writeAuditLog,
@@ -61,7 +60,6 @@ export const Route = createFileRoute("/franchise-manager/applications")({
 
 function ApplicationsQueue() {
   const { data: applications = [] } = useQuery(applicationsQuery);
-  const { data: territories = [] } = useQuery(territoriesQuery);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [selected, setSelected] = useState<FranchiseApplication | null>(null);
@@ -123,16 +121,6 @@ function ApplicationsQueue() {
           setNotes("");
         },
         onError: (error: Error) => toast.error(error.message),
-      },
-    );
-  };
-
-  const requestClarification = () => {
-    if (!selected || !notes.trim()) return toast.error("A clarification message is required.");
-    decide.mutate(
-      { app: selected, approve: false },
-      {
-        onSuccess: () => undefined,
       },
     );
   };

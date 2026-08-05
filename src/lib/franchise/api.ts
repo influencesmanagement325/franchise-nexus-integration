@@ -146,7 +146,7 @@ export async function writeAuditLog(entry: TablesInsert<"franchise_audit_logs">)
 export async function approveApplication(id: string, reviewNotes: string) {
   const { data, error } = await supabase.rpc("fm_approve_application", {
     _application_id: id,
-    _review_notes: reviewNotes || undefined,
+    ...(reviewNotes ? { _review_notes: reviewNotes } : {}),
   });
   if (error) throw new Error(error.message);
   return data;
