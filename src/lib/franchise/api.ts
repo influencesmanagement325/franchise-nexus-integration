@@ -233,3 +233,33 @@ export async function deleteRow(table: FranchiseTable, id: string) {
   const { error } = await query.delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
+
+/* ---------------------------------------------------------------------------
+ * Document vault storage (private bucket + signed URLs).
+ * ------------------------------------------------------------------------- */
+
+export const DOCUMENT_BUCKET = "franchise-documents";
+
+export async function uploadDocumentFile(file: File, folder = "general") {
+  const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const path = `${folder}/${Date.now()}-${safe}`;
+  const { error } = await supabase.storage.from(DOCUMENT_BUCKET).upload(path, file, {
+    cacheControl: "3600",
+    upsert: false,
+  });
+  if (error) throw new Error(error.message);
+  return path;
+}
+
+export async function getDocumentUrl(path: string) {
+  const { data, error } = await supabase.storage
+    .from(DOCUMENT_BUCKET)
+    .createSignedUrl(path, 60 * 10);
+  if (error) throw new Error(error.message);
+  return data.signedUrl;
+}
+
+export async function removeDocumentFile(path: string) {
+  const { error } = await supabase.storage.from(DOCUMENT_BUCKET).remove([path]);
+  if (error) throw new Error(error.message);
+}
