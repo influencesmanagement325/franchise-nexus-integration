@@ -22,12 +22,12 @@ import {
 export type FieldDef = {
   name: string;
   label: string;
-  type?: "text" | "number" | "date" | "datetime-local" | "textarea" | "select" | "file";
-  options?: { value: string; label: string }[];
-  required?: boolean;
-  placeholder?: string;
+  type?: "text" | "number" | "date" | "datetime-local" | "textarea" | "select" | "file" | undefined;
+  options?: { value: string; label: string }[] | undefined;
+  required?: boolean | undefined;
+  placeholder?: string | undefined;
   /** Rendered full width instead of in the two-column grid. */
-  wide?: boolean;
+  wide?: boolean | undefined;
 };
 
 export type RecordValues = Record<string, string | number | File | null>;
@@ -58,11 +58,11 @@ export function RecordDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
-  description?: string;
+  description?: string | undefined;
   fields: FieldDef[];
-  initial?: Record<string, unknown> | null;
-  submitLabel?: string;
-  pending?: boolean;
+  initial?: Record<string, unknown> | null | undefined;
+  submitLabel?: string | undefined;
+  pending?: boolean | undefined;
   onSubmit: (values: RecordValues) => void;
 }) {
   const [values, setValues] = useState<RecordValues>({});
