@@ -28,6 +28,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { PageHeader } from "@/components/franchise/PageHeader";
 import { StatCard } from "@/components/franchise/StatCard";
 import { StatusPill } from "@/components/franchise/StatusPill";
+import { RowActions } from "@/components/franchise/RowActions";
+import { RecordDialog, type FieldDef, type RecordValues } from "@/components/franchise/RecordDialog";
 import {
   applicationsQuery,
   franchiseKeys,
@@ -36,6 +38,7 @@ import {
   useFranchiseMutation,
   writeAuditLog,
 } from "@/lib/franchise/api";
+import { asNullable, useRecordActions } from "@/lib/franchise/actions";
 import type { FranchiseApplication } from "@/lib/franchise/types";
 import { shortDate, titleCase } from "@/lib/franchise/format";
 
