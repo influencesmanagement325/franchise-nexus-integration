@@ -61,7 +61,7 @@ export const Route = createFileRoute("/franchise-manager/franchises")({
 });
 
 function FranchisesPage() {
-  const { data: franchises = [] } = useQuery(franchisesQuery);
+  const { data: franchises = [], isLoading } = useQuery(franchisesQuery);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [selected, setSelected] = useState<Franchise | null>(null);
@@ -73,6 +73,74 @@ function FranchisesPage() {
   });
   const [suspendTarget, setSuspendTarget] = useState<Franchise | null>(null);
   const [suspendReason, setSuspendReason] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [editing, setEditing] = useState<Franchise | null>(null);
+
+  const actions = useRecordActions({
+    table: "franchises",
+    entityType: "franchise",
+    labelOf: (row) => String(row["code"] ?? row["name"] ?? "Franchise"),
+  });
+
+  const fields: FieldDef[] = [
+    { name: "code", label: "Franchise code", required: true, placeholder: "FR-DEL-004" },
+    { name: "name", label: "Franchise name", required: true },
+    { name: "owner_name", label: "Owner name", required: true },
+    { name: "email", label: "Email", required: true },
+    { name: "phone", label: "Phone" },
+    { name: "territory", label: "Territory", required: true },
+    { name: "city", label: "City" },
+    { name: "state", label: "State" },
+    {
+      name: "status",
+      label: "Status",
+      type: "select",
+      options: [
+        { value: "active", label: "Active" },
+        { value: "suspended", label: "Suspended" },
+        { value: "terminated", label: "Terminated" },
+      ],
+    },
+    {
+      name: "health",
+      label: "Health",
+      type: "select",
+      options: [
+        { value: "excellent", label: "Excellent" },
+        { value: "good", label: "Good" },
+        { value: "average", label: "Average" },
+        { value: "at_risk", label: "At risk" },
+      ],
+    },
+    { name: "commission_rate", label: "Commission %", type: "number" },
+    { name: "royalty_rate", label: "Royalty %", type: "number" },
+    { name: "pricing_variation", label: "Pricing variation %", type: "number" },
+    { name: "performance_score", label: "Performance score", type: "number" },
+    { name: "total_sales", label: "Total sales (₹)", type: "number" },
+    { name: "active_resellers", label: "Active resellers", type: "number" },
+    { name: "joined_date", label: "Joined date", type: "date" },
+  ];
+
+  const toPayload = (values: RecordValues) => ({
+    code: values["code"],
+    name: values["name"],
+    owner_name: values["owner_name"],
+    email: values["email"],
+    phone: values["phone"] || "",
+    territory: values["territory"],
+    city: values["city"] || "",
+    state: values["state"] || "",
+    status: values["status"] || "active",
+    health: values["health"] || "good",
+    commission_rate: asNumber(values["commission_rate"]),
+    royalty_rate: asNumber(values["royalty_rate"]),
+    pricing_variation: asNumber(values["pricing_variation"]),
+    performance_score: asNumber(values["performance_score"]),
+    total_sales: asNumber(values["total_sales"]),
+    active_resellers: asNumber(values["active_resellers"]),
+    joined_date: values["joined_date"] || new Date().toISOString().slice(0, 10),
+  });
+
 
   const save = useFranchiseMutation(async (franchise: Franchise) => {
     await updateRow("franchises", franchise.id, {
