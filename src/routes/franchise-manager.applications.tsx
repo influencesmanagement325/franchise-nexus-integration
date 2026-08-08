@@ -215,6 +215,12 @@ function ApplicationsQueue() {
         icon={ClipboardList}
         title="Applications Queue"
         description="Screen incoming franchise applications, verify KYC and issue approve or reject decisions."
+        actions={
+          <Button onClick={() => setCreating(true)}>
+            <Plus className="mr-2 size-4" />
+            New application
+          </Button>
+        }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
