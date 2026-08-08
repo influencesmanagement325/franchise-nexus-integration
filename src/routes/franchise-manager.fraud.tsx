@@ -33,11 +33,79 @@ export const Route = createFileRoute("/franchise-manager/fraud")({
 });
 
 function Page() {
-  const { data: rows = [] } = useQuery(fraudAlertsQuery);
+  const { data: rows = [], isLoading } = useQuery(fraudAlertsQuery);
   const { data: franchises = [] } = useQuery(franchisesQuery);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<FranchiseFraudAlert | null>(null);
   const [notes, setNotes] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [editing, setEditing] = useState<FranchiseFraudAlert | null>(null);
+
+  const actions = useRecordActions({
+    table: "franchise_fraud_alerts",
+    entityType: "fraud_alert",
+    labelOf: (row) => String(row["alert_type"] ?? "Alert"),
+  });
+
+  const fields: FieldDef[] = [
+    {
+      name: "franchise_id",
+      label: "Franchise",
+      type: "select",
+      options: franchises.map((f) => ({ value: f.id, label: `${f.code} — ${f.name}` })),
+    },
+    {
+      name: "alert_type",
+      label: "Alert type",
+      type: "select",
+      required: true,
+      options: [
+        { value: "sales_anomaly", label: "Sales anomaly" },
+        { value: "pricing_violation", label: "Pricing violation" },
+        { value: "lead_manipulation", label: "Lead manipulation" },
+        { value: "payout_mismatch", label: "Payout mismatch" },
+        { value: "document_forgery", label: "Document forgery" },
+      ],
+    },
+    {
+      name: "severity",
+      label: "Severity",
+      type: "select",
+      options: [
+        { value: "low", label: "Low" },
+        { value: "medium", label: "Medium" },
+        { value: "high", label: "High" },
+        { value: "critical", label: "Critical" },
+      ],
+    },
+    { name: "risk_score", label: "Risk score (0-100)", type: "number" },
+    {
+      name: "status",
+      label: "Status",
+      type: "select",
+      options: [
+        { value: "open", label: "Open" },
+        { value: "investigating", label: "Investigating" },
+        { value: "confirmed", label: "Confirmed" },
+        { value: "dismissed", label: "Dismissed" },
+      ],
+    },
+    { name: "detected_at", label: "Detected at", type: "datetime-local" },
+    { name: "description", label: "Description", type: "textarea", required: true, wide: true },
+    { name: "recommendation", label: "Recommendation", type: "textarea", wide: true },
+  ];
+
+  const toPayload = (values: RecordValues) => ({
+    franchise_id: asNullable(values["franchise_id"]),
+    alert_type: values["alert_type"],
+    severity: values["severity"] || "medium",
+    risk_score: asNumber(values["risk_score"]),
+    status: values["status"] || "open",
+    detected_at: values["detected_at"] ? new Date(String(values["detected_at"])).toISOString() : new Date().toISOString(),
+    description: values["description"],
+    recommendation: values["recommendation"] || "Manual investigation required",
+  });
+
 
   const review = useFranchiseMutation(async (status: "confirmed" | "dismissed") => {
     if (!selected) return;
