@@ -131,6 +131,12 @@ function Page() {
         icon={ShieldAlert}
         title="AI Fraud Detection"
         description="AI-scored anomaly alerts across sales, pricing, leads and payouts."
+        actions={
+          <Button onClick={() => setCreating(true)}>
+            <Plus className="mr-2 size-4" />
+            Raise alert
+          </Button>
+        }
       />
 
       <Card className="glass-panel shadow-card">
