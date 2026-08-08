@@ -213,6 +213,47 @@ function Page() {
         </CardContent>
       </Card>
       <Dialog open={!!selected} onOpenChange={(open) => !open && setSelected(null)}><DialogContent><DialogHeader><DialogTitle className="flex items-center gap-2"><Brain className="size-5 text-primary" />Review fraud alert</DialogTitle><DialogDescription>{selected?.description}</DialogDescription></DialogHeader>{selected ? <div className="space-y-4"><div className="grid grid-cols-2 gap-3"><div className="rounded-md border border-border p-3"><p className="text-xs text-muted-foreground">AI confidence</p><p className="font-semibold">{selected.risk_score}%</p></div><div className="rounded-md border border-border p-3"><p className="text-xs text-muted-foreground">Recommendation</p><p className="text-sm">{selected.recommendation || "Manual investigation required"}</p></div></div>{selected.patterns.length ? <div className="flex flex-wrap gap-2">{selected.patterns.map((pattern) => <span key={pattern} className="rounded-md border border-border px-2 py-1 text-xs">{pattern}</span>)}</div> : null}<div className="space-y-2"><Label htmlFor="fraud-notes">Review notes</Label><Textarea id="fraud-notes" value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} /></div></div> : null}<DialogFooter><Button variant="outline" disabled={review.isPending} onClick={() => review.mutate("dismissed", { onSuccess: () => { toast.success("Alert dismissed"); setSelected(null); }, onError: (e: Error) => toast.error(e.message) })}>Dismiss</Button><Button disabled={review.isPending} onClick={() => review.mutate("confirmed", { onSuccess: () => { toast.success("Fraud confirmed"); setSelected(null); }, onError: (e: Error) => toast.error(e.message) })}>Confirm fraud</Button></DialogFooter></DialogContent></Dialog>
+
+      <RecordDialog
+        open={creating}
+        onOpenChange={setCreating}
+        title="Raise fraud alert"
+        description="Log an anomaly manually when it is spotted outside the AI pipeline."
+        fields={fields}
+        pending={actions.create.isPending}
+        onSubmit={(values) =>
+          actions.create.mutate(toPayload(values), {
+            onSuccess: () => {
+              toast.success("Alert raised");
+              setCreating(false);
+            },
+            onError: (e: Error) => toast.error(e.message),
+          })
+        }
+      />
+
+      <RecordDialog
+        open={!!editing}
+        onOpenChange={(open) => !open && setEditing(null)}
+        title="Edit fraud alert"
+        description={editing?.description}
+        fields={fields}
+        initial={editing as unknown as Record<string, unknown>}
+        pending={actions.update.isPending}
+        onSubmit={(values) => {
+          if (!editing) return;
+          actions.update.mutate(
+            { id: editing.id, patch: toPayload(values), previous: editing as unknown as Record<string, unknown> },
+            {
+              onSuccess: () => {
+                toast.success("Alert updated");
+                setEditing(null);
+              },
+              onError: (e: Error) => toast.error(e.message),
+            },
+          );
+        }}
+      />
     </>
   );
 }
