@@ -349,12 +349,22 @@ function FranchisesPage() {
                     Reactivate
                   </Button>
                 )}
+                <RowActions
+                  label={f.code}
+                  onEdit={() => setEditing(f)}
+                  onDelete={() =>
+                    actions.remove.mutate(f as unknown as Record<string, unknown>, {
+                      onSuccess: () => toast.success("Franchise deleted"),
+                      onError: (e: Error) => toast.error(e.message),
+                    })
+                  }
+                />
               </div>
             </motion.div>
           ))}
           {filtered.length === 0 ? (
             <p className="col-span-full py-10 text-center text-muted-foreground">
-              No franchises match the current filters.
+              {isLoading ? "Loading franchises…" : "No franchises match the current filters."}
             </p>
           ) : null}
         </CardContent>
