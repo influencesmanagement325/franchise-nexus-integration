@@ -451,6 +451,47 @@ function ApplicationsQueue() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <RecordDialog
+        open={creating}
+        onOpenChange={setCreating}
+        title="New franchise application"
+        description="Log an application received offline or through a partner channel."
+        fields={fields}
+        pending={actions.create.isPending}
+        onSubmit={(values) =>
+          actions.create.mutate(toPayload(values), {
+            onSuccess: () => {
+              toast.success("Application added");
+              setCreating(false);
+            },
+            onError: (e: Error) => toast.error(e.message),
+          })
+        }
+      />
+
+      <RecordDialog
+        open={!!editing}
+        onOpenChange={(open) => !open && setEditing(null)}
+        title="Edit application"
+        description={editing?.business_name}
+        fields={fields}
+        initial={editing as unknown as Record<string, unknown>}
+        pending={actions.update.isPending}
+        onSubmit={(values) => {
+          if (!editing) return;
+          actions.update.mutate(
+            { id: editing.id, patch: toPayload(values), previous: editing as unknown as Record<string, unknown> },
+            {
+              onSuccess: () => {
+                toast.success("Application updated");
+                setEditing(null);
+              },
+              onError: (e: Error) => toast.error(e.message),
+            },
+          );
+        }}
+      />
     </>
   );
 }
