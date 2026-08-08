@@ -442,6 +442,46 @@ function FranchisesPage() {
           <DialogFooter><Button variant="outline" onClick={() => setSuspendTarget(null)}>Cancel</Button><Button variant="destructive" disabled={changeStatus.isPending} onClick={() => suspendTarget && changeStatus.mutate({ franchise: suspendTarget, next: "suspended" }, { onSuccess: () => { toast.success(`${suspendTarget.name} suspended`); setSuspendTarget(null); }, onError: (e: Error) => toast.error(e.message) })}>Confirm suspension</Button></DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <RecordDialog
+        open={creating}
+        onOpenChange={setCreating}
+        title="New franchise unit"
+        fields={fields}
+        pending={actions.create.isPending}
+        onSubmit={(values) =>
+          actions.create.mutate(toPayload(values), {
+            onSuccess: () => {
+              toast.success("Franchise created");
+              setCreating(false);
+            },
+            onError: (e: Error) => toast.error(e.message),
+          })
+        }
+      />
+
+      <RecordDialog
+        open={!!editing}
+        onOpenChange={(open) => !open && setEditing(null)}
+        title="Edit franchise"
+        description={editing?.name}
+        fields={fields}
+        initial={editing as unknown as Record<string, unknown>}
+        pending={actions.update.isPending}
+        onSubmit={(values) => {
+          if (!editing) return;
+          actions.update.mutate(
+            { id: editing.id, patch: toPayload(values), previous: editing as unknown as Record<string, unknown> },
+            {
+              onSuccess: () => {
+                toast.success("Franchise updated");
+                setEditing(null);
+              },
+              onError: (e: Error) => toast.error(e.message),
+            },
+          );
+        }}
+      />
     </>
   );
 }
