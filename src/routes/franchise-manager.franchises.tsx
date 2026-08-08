@@ -204,6 +204,12 @@ function FranchisesPage() {
         icon={Building2}
         title="Franchise Network"
         description="Every franchise unit with commercial terms, health score, lead routing and lifecycle controls."
+        actions={
+          <Button onClick={() => setCreating(true)}>
+            <Plus className="mr-2 size-4" />
+            New franchise
+          </Button>
+        }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
