@@ -183,15 +183,29 @@ function Page() {
                     <TableCell className="max-w-[22rem] truncate text-sm">{titleCase(r.severity)}</TableCell>
                     <TableCell className="max-w-[22rem] truncate text-sm">{dateTime(r.detected_at)}</TableCell>
                     <TableCell><StatusPill value={r.status} /></TableCell>
-                    <TableCell className="text-right"><Button size="sm" variant="outline" disabled={r.status === "confirmed" || r.status === "dismissed"} onClick={() => { setSelected(r); setNotes(r.review_notes ?? ""); }}>Review</Button></TableCell>
+                    <TableCell>
+                      <div className="flex items-center justify-end gap-2">
+                        <Button size="sm" variant="outline" disabled={r.status === "confirmed" || r.status === "dismissed"} onClick={() => { setSelected(r); setNotes(r.review_notes ?? ""); }}>Review</Button>
+                        <RowActions
+                          label={titleCase(r.alert_type)}
+                          onEdit={() => setEditing(r)}
+                          onDelete={() =>
+                            actions.remove.mutate(r as unknown as Record<string, unknown>, {
+                              onSuccess: () => toast.success("Alert deleted"),
+                              onError: (e: Error) => toast.error(e.message),
+                            })
+                          }
+                        />
+                      </div>
+                    </TableCell>
                   </motion.tr>
                 ))}
                 {filtered.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={8} className="py-10 text-center text-muted-foreground">
-                      Nothing to show yet.
+                      {isLoading ? "Loading alerts…" : "Nothing to show yet."}
                     </TableCell>
-                  </TableRow>
+                  </TableRow>)
                 ) : null}
               </TableBody>
             </Table>
