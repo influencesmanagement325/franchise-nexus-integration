@@ -62,12 +62,88 @@ export const Route = createFileRoute("/franchise-manager/applications")({
 });
 
 function ApplicationsQueue() {
-  const { data: applications = [] } = useQuery(applicationsQuery);
+  const { data: applications = [], isLoading } = useQuery(applicationsQuery);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [selected, setSelected] = useState<FranchiseApplication | null>(null);
   const [notes, setNotes] = useState("");
   const [decision, setDecision] = useState<"review" | "clarify">("review");
+  const [creating, setCreating] = useState(false);
+  const [editing, setEditing] = useState<FranchiseApplication | null>(null);
+
+  const actions = useRecordActions({
+    table: "franchise_applications",
+    entityType: "franchise_application",
+    labelOf: (row) => String(row["code"] ?? row["business_name"] ?? "Application"),
+  });
+
+  const fields: FieldDef[] = [
+    { name: "code", label: "Application code", required: true, placeholder: "FA-2026-014" },
+    { name: "business_name", label: "Business name", required: true },
+    { name: "owner_name", label: "Owner name", required: true },
+    { name: "email", label: "Email", required: true },
+    { name: "phone", label: "Phone", required: true },
+    { name: "requested_territory", label: "Requested territory", required: true },
+    { name: "city", label: "City", required: true },
+    { name: "state", label: "State", required: true },
+    { name: "country", label: "Country", placeholder: "India" },
+    {
+      name: "business_type",
+      label: "Business type",
+      type: "select",
+      options: [
+        { value: "sole_proprietor", label: "Sole proprietor" },
+        { value: "partnership", label: "Partnership" },
+        { value: "private_limited", label: "Private limited" },
+        { value: "llp", label: "LLP" },
+      ],
+    },
+    { name: "experience", label: "Experience", placeholder: "5 years in IT services" },
+    { name: "investment_capacity", label: "Investment capacity", placeholder: "₹25L – ₹40L" },
+    {
+      name: "kyc_status",
+      label: "KYC status",
+      type: "select",
+      options: [
+        { value: "pending", label: "Pending" },
+        { value: "in_progress", label: "In progress" },
+        { value: "verified", label: "Verified" },
+        { value: "failed", label: "Failed" },
+      ],
+    },
+    {
+      name: "status",
+      label: "Status",
+      type: "select",
+      options: [
+        { value: "in_review", label: "In review" },
+        { value: "approved", label: "Approved" },
+        { value: "rejected", label: "Rejected" },
+      ],
+    },
+    { name: "applied_at", label: "Applied on", type: "date" },
+    { name: "review_notes", label: "Reviewer notes", type: "textarea", wide: true },
+  ];
+
+  const toPayload = (values: RecordValues) => ({
+    code: values["code"],
+    business_name: values["business_name"],
+    owner_name: values["owner_name"],
+    email: values["email"],
+    phone: values["phone"],
+    requested_territory: values["requested_territory"],
+    city: values["city"],
+    state: values["state"],
+    country: values["country"] || "India",
+    business_type: values["business_type"] || "private_limited",
+    experience: values["experience"] || "",
+    investment_capacity: values["investment_capacity"] || "",
+    kyc_status: values["kyc_status"] || "pending",
+    status: values["status"] || "in_review",
+    applied_at: values["applied_at"] || new Date().toISOString().slice(0, 10),
+    review_notes: asNullable(values["review_notes"]),
+  });
+
 
   const decide = useFranchiseMutation(
     async ({ app, approve }: { app: FranchiseApplication; approve: boolean }) => {
