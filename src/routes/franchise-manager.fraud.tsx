@@ -205,7 +205,7 @@ function Page() {
                     <TableCell colSpan={8} className="py-10 text-center text-muted-foreground">
                       {isLoading ? "Loading alerts…" : "Nothing to show yet."}
                     </TableCell>
-                  </TableRow>)
+                  </TableRow>
                 ) : null}
               </TableBody>
             </Table>
