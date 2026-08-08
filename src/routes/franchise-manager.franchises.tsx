@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Building2, Percent, Search, TrendingUp, Users } from "lucide-react";
+import { Building2, Percent, Plus, Search, TrendingUp, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,8 @@ import {
 import { PageHeader } from "@/components/franchise/PageHeader";
 import { StatCard } from "@/components/franchise/StatCard";
 import { StatusPill } from "@/components/franchise/StatusPill";
+import { RowActions } from "@/components/franchise/RowActions";
+import { RecordDialog, type FieldDef, type RecordValues } from "@/components/franchise/RecordDialog";
 import {
   franchiseKeys,
   franchisesQuery,
@@ -35,6 +37,7 @@ import {
   useFranchiseMutation,
   writeAuditLog,
 } from "@/lib/franchise/api";
+import { asNumber, useRecordActions } from "@/lib/franchise/actions";
 import type { Franchise } from "@/lib/franchise/types";
 import { compactInr, inr, shortDate } from "@/lib/franchise/format";
 
@@ -58,7 +61,7 @@ export const Route = createFileRoute("/franchise-manager/franchises")({
 });
 
 function FranchisesPage() {
-  const { data: franchises = [] } = useQuery(franchisesQuery);
+  const { data: franchises = [], isLoading } = useQuery(franchisesQuery);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [selected, setSelected] = useState<Franchise | null>(null);
@@ -70,6 +73,74 @@ function FranchisesPage() {
   });
   const [suspendTarget, setSuspendTarget] = useState<Franchise | null>(null);
   const [suspendReason, setSuspendReason] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [editing, setEditing] = useState<Franchise | null>(null);
+
+  const actions = useRecordActions({
+    table: "franchises",
+    entityType: "franchise",
+    labelOf: (row) => String(row["code"] ?? row["name"] ?? "Franchise"),
+  });
+
+  const fields: FieldDef[] = [
+    { name: "code", label: "Franchise code", required: true, placeholder: "FR-DEL-004" },
+    { name: "name", label: "Franchise name", required: true },
+    { name: "owner_name", label: "Owner name", required: true },
+    { name: "email", label: "Email", required: true },
+    { name: "phone", label: "Phone" },
+    { name: "territory", label: "Territory", required: true },
+    { name: "city", label: "City" },
+    { name: "state", label: "State" },
+    {
+      name: "status",
+      label: "Status",
+      type: "select",
+      options: [
+        { value: "active", label: "Active" },
+        { value: "suspended", label: "Suspended" },
+        { value: "terminated", label: "Terminated" },
+      ],
+    },
+    {
+      name: "health",
+      label: "Health",
+      type: "select",
+      options: [
+        { value: "excellent", label: "Excellent" },
+        { value: "good", label: "Good" },
+        { value: "average", label: "Average" },
+        { value: "at_risk", label: "At risk" },
+      ],
+    },
+    { name: "commission_rate", label: "Commission %", type: "number" },
+    { name: "royalty_rate", label: "Royalty %", type: "number" },
+    { name: "pricing_variation", label: "Pricing variation %", type: "number" },
+    { name: "performance_score", label: "Performance score", type: "number" },
+    { name: "total_sales", label: "Total sales (₹)", type: "number" },
+    { name: "active_resellers", label: "Active resellers", type: "number" },
+    { name: "joined_date", label: "Joined date", type: "date" },
+  ];
+
+  const toPayload = (values: RecordValues) => ({
+    code: values["code"],
+    name: values["name"],
+    owner_name: values["owner_name"],
+    email: values["email"],
+    phone: values["phone"] || "",
+    territory: values["territory"],
+    city: values["city"] || "",
+    state: values["state"] || "",
+    status: values["status"] || "active",
+    health: values["health"] || "good",
+    commission_rate: asNumber(values["commission_rate"]),
+    royalty_rate: asNumber(values["royalty_rate"]),
+    pricing_variation: asNumber(values["pricing_variation"]),
+    performance_score: asNumber(values["performance_score"]),
+    total_sales: asNumber(values["total_sales"]),
+    active_resellers: asNumber(values["active_resellers"]),
+    joined_date: values["joined_date"] || new Date().toISOString().slice(0, 10),
+  });
+
 
   const save = useFranchiseMutation(async (franchise: Franchise) => {
     await updateRow("franchises", franchise.id, {
@@ -133,6 +204,12 @@ function FranchisesPage() {
         icon={Building2}
         title="Franchise Network"
         description="Every franchise unit with commercial terms, health score, lead routing and lifecycle controls."
+        actions={
+          <Button onClick={() => setCreating(true)}>
+            <Plus className="mr-2 size-4" />
+            New franchise
+          </Button>
+        }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -272,12 +349,22 @@ function FranchisesPage() {
                     Reactivate
                   </Button>
                 )}
+                <RowActions
+                  label={f.code}
+                  onEdit={() => setEditing(f)}
+                  onDelete={() =>
+                    actions.remove.mutate(f as unknown as Record<string, unknown>, {
+                      onSuccess: () => toast.success("Franchise deleted"),
+                      onError: (e: Error) => toast.error(e.message),
+                    })
+                  }
+                />
               </div>
             </motion.div>
           ))}
           {filtered.length === 0 ? (
             <p className="col-span-full py-10 text-center text-muted-foreground">
-              No franchises match the current filters.
+              {isLoading ? "Loading franchises…" : "No franchises match the current filters."}
             </p>
           ) : null}
         </CardContent>
@@ -355,6 +442,46 @@ function FranchisesPage() {
           <DialogFooter><Button variant="outline" onClick={() => setSuspendTarget(null)}>Cancel</Button><Button variant="destructive" disabled={changeStatus.isPending} onClick={() => suspendTarget && changeStatus.mutate({ franchise: suspendTarget, next: "suspended" }, { onSuccess: () => { toast.success(`${suspendTarget.name} suspended`); setSuspendTarget(null); }, onError: (e: Error) => toast.error(e.message) })}>Confirm suspension</Button></DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <RecordDialog
+        open={creating}
+        onOpenChange={setCreating}
+        title="New franchise unit"
+        fields={fields}
+        pending={actions.create.isPending}
+        onSubmit={(values) =>
+          actions.create.mutate(toPayload(values), {
+            onSuccess: () => {
+              toast.success("Franchise created");
+              setCreating(false);
+            },
+            onError: (e: Error) => toast.error(e.message),
+          })
+        }
+      />
+
+      <RecordDialog
+        open={!!editing}
+        onOpenChange={(open) => !open && setEditing(null)}
+        title="Edit franchise"
+        description={editing?.name}
+        fields={fields}
+        initial={editing as unknown as Record<string, unknown>}
+        pending={actions.update.isPending}
+        onSubmit={(values) => {
+          if (!editing) return;
+          actions.update.mutate(
+            { id: editing.id, patch: toPayload(values), previous: editing as unknown as Record<string, unknown> },
+            {
+              onSuccess: () => {
+                toast.success("Franchise updated");
+                setEditing(null);
+              },
+              onError: (e: Error) => toast.error(e.message),
+            },
+          );
+        }}
+      />
     </>
   );
 }
