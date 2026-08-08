@@ -356,6 +356,16 @@ function ApplicationsQueue() {
                             <MessageSquare className="mr-2 size-4" /> Clarify
                           </Button>
                         ) : null}
+                        <RowActions
+                          label={app.code}
+                          onEdit={() => setEditing(app)}
+                          onDelete={() =>
+                            actions.remove.mutate(app as unknown as Record<string, unknown>, {
+                              onSuccess: () => toast.success("Application deleted"),
+                              onError: (e: Error) => toast.error(e.message),
+                            })
+                          }
+                        />
                       </div>
                     </TableCell>
                   </motion.tr>
@@ -363,7 +373,7 @@ function ApplicationsQueue() {
                 {filtered.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">
-                      No applications match the current filters.
+                      {isLoading ? "Loading applications…" : "No applications match the current filters."}
                     </TableCell>
                   </TableRow>
                 ) : null}
