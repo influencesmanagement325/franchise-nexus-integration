@@ -314,14 +314,14 @@ function ApplicationsQueue() {
                         {app.city}, {app.state}
                       </p>
                     </TableCell>
-                    <TableCell className="text-sm">{app.investment_capacity}</TableCell>
+                    <TableCell>{app.investment_capacity}</TableCell>
                     <TableCell>
                       <StatusPill value={app.kyc_status} />
                     </TableCell>
                     <TableCell>
                       <StatusPill value={app.status} />
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
+                    <TableCell className="text-muted-foreground">
                       {shortDate(app.applied_at)}
                     </TableCell>
                     <TableCell className="text-right">

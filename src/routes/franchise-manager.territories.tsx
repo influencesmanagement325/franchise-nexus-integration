@@ -176,11 +176,11 @@ function Page() {
                     transition={{ delay: Math.min(i * 0.03, 0.3) }}
                     className="border-b border-border/50 transition-colors hover:bg-accent/40"
                   >
-                    <TableCell className="max-w-[22rem] truncate text-sm font-medium">{r.name}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{`${r.region} • ${r.state}`}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{num(r.population)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{`${r.potential_score}/100`}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{titleCase(r.exclusivity)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate font-medium">{r.name}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{`${r.region} • ${r.state}`}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{num(r.population)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{`${r.potential_score}/100`}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{titleCase(r.exclusivity)}</TableCell>
                     <TableCell><StatusPill value={r.status} /></TableCell>
                     <TableCell>
                       <div className="flex items-center justify-end gap-2">

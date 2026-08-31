@@ -70,12 +70,12 @@ export function StatusPill({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap",
+        "inline-flex h-6 items-center gap-1.5 rounded-full border px-2.5 text-[11px] leading-none font-semibold tracking-[0.01em] whitespace-nowrap",
         toneClass[resolved],
         className,
       )}
     >
-      <span className="size-1.5 rounded-full bg-current" />
+      <span className="size-1.5 shrink-0 rounded-full bg-current" />
       {label ?? titleCase(value)}
     </span>
   );

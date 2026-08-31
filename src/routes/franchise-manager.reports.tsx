@@ -90,13 +90,13 @@ function Page() {
                     className="border-b border-border/50 transition-colors hover:bg-accent/40"
                   >
                     
-                    <TableCell className="max-w-[22rem] truncate text-sm">{r.actor}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{titleCase(r.action)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{`${titleCase(r.entity_type)} • ${r.entity_id}`}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{r.details}</TableCell>
-                    <TableCell className="text-sm">{r.old_value || r.new_value ? `${r.old_value ?? "—"} → ${r.new_value ?? "—"}` : "—"}</TableCell>
-                    <TableCell><span className="text-sm capitalize">{r.result}</span></TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{dateTime(r.created_at)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{r.actor}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{titleCase(r.action)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{`${titleCase(r.entity_type)} • ${r.entity_id}`}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{r.details}</TableCell>
+                    <TableCell>{r.old_value || r.new_value ? `${r.old_value ?? "—"} → ${r.new_value ?? "—"}` : "—"}</TableCell>
+                    <TableCell><span className="capitalize">{r.result}</span></TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{dateTime(r.created_at)}</TableCell>
                     
                   </motion.tr>
                 ))}
