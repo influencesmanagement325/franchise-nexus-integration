@@ -94,7 +94,7 @@ function Page() {
                     <TableCell className="max-w-[22rem] truncate">{titleCase(r.action)}</TableCell>
                     <TableCell className="max-w-[22rem] truncate">{`${titleCase(r.entity_type)} • ${r.entity_id}`}</TableCell>
                     <TableCell className="max-w-[22rem] truncate">{r.details}</TableCell>
-                    <TableCell className="text-sm">{r.old_value || r.new_value ? `${r.old_value ?? "—"} → ${r.new_value ?? "—"}` : "—"}</TableCell>
+                    <TableCell>{r.old_value || r.new_value ? `${r.old_value ?? "—"} → ${r.new_value ?? "—"}` : "—"}</TableCell>
                     <TableCell><span className="capitalize">{r.result}</span></TableCell>
                     <TableCell className="max-w-[22rem] truncate">{dateTime(r.created_at)}</TableCell>
                     

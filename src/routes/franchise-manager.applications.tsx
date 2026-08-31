@@ -314,7 +314,7 @@ function ApplicationsQueue() {
                         {app.city}, {app.state}
                       </p>
                     </TableCell>
-                    <TableCell className="text-sm">{app.investment_capacity}</TableCell>
+                    <TableCell>{app.investment_capacity}</TableCell>
                     <TableCell>
                       <StatusPill value={app.kyc_status} />
                     </TableCell>
