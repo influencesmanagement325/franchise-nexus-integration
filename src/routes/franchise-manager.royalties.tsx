@@ -149,13 +149,13 @@ function Page() {
                     transition={{ delay: Math.min(i * 0.03, 0.3) }}
                     className="border-b border-border/50 transition-colors hover:bg-accent/40"
                   >
-                    <TableCell className="text-sm font-medium">{nameOf(r.franchise_id)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{periodLabel(r.period)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{inr(r.gross_sales)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{inr(r.royalty_due)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{inr(r.commission_due)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{inr(r.paid_amount)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{shortDate(r.due_date)}</TableCell>
+                    <TableCell className="font-medium">{nameOf(r.franchise_id)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{periodLabel(r.period)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{inr(r.gross_sales)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{inr(r.royalty_due)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{inr(r.commission_due)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{inr(r.paid_amount)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{shortDate(r.due_date)}</TableCell>
                     <TableCell><StatusPill value={r.status} /></TableCell>
                     <TableCell>
                       <div className="flex items-center justify-end gap-1">

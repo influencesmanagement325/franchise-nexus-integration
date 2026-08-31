@@ -321,7 +321,7 @@ function ApplicationsQueue() {
                     <TableCell>
                       <StatusPill value={app.status} />
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
+                    <TableCell className="text-muted-foreground">
                       {shortDate(app.applied_at)}
                     </TableCell>
                     <TableCell className="text-right">

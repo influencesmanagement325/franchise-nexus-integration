@@ -182,12 +182,12 @@ function Page() {
                     transition={{ delay: Math.min(i * 0.03, 0.3) }}
                     className="border-b border-border/50 transition-colors hover:bg-accent/40"
                   >
-                    <TableCell className="text-sm font-medium">{nameOf(r.franchise_id)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{r.requirement}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{titleCase(r.category)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{titleCase(r.severity)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{shortDate(r.due_date)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{shortDate(r.last_checked)}</TableCell>
+                    <TableCell className="font-medium">{nameOf(r.franchise_id)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{r.requirement}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{titleCase(r.category)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{titleCase(r.severity)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{shortDate(r.due_date)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{shortDate(r.last_checked)}</TableCell>
                     <TableCell><StatusPill value={r.status} /></TableCell>
                     <TableCell><div className="flex justify-end gap-2"><Button size="sm" variant="outline" disabled={r.status === "resolved"} onClick={() => { setSelected(r); setMode("warn"); setMessage(""); }}><AlertTriangle className="mr-2 size-4" />Warn</Button><Button size="sm" variant="secondary" disabled={r.status === "resolved"} onClick={() => { setSelected(r); setMode("escalate"); setMessage(""); }}><ArrowUpRight className="mr-2 size-4" />Escalate</Button><Button size="sm" variant="ghost" className="text-success" disabled={r.status === "resolved"} onClick={() => actions.update.mutate({ id: r.id, patch: { status: "resolved", last_checked: new Date().toISOString().slice(0, 10) }, previous: r as unknown as Record<string, unknown> }, { onSuccess: () => toast.success("Requirement resolved"), onError: (e: Error) => toast.error(e.message) })}><CheckCircle2 className="mr-2 size-4" />Resolve</Button><RowActions label={r.requirement} onEdit={() => setEditing(r)} onDelete={() => actions.remove.mutate(r as unknown as Record<string, unknown>, { onSuccess: () => toast.success("Requirement deleted"), onError: (e: Error) => toast.error(e.message) })} /></div></TableCell>
                   </motion.tr>

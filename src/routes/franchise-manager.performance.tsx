@@ -133,13 +133,13 @@ function Page() {
                     transition={{ delay: Math.min(i * 0.03, 0.3) }}
                     className="border-b border-border/50 transition-colors hover:bg-accent/40"
                   >
-                    <TableCell className="text-sm font-medium">{nameOf(r.franchise_id)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{periodLabel(r.period)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{inr(r.revenue)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{num(r.leads)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{num(r.conversions)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{`${Number(r.csat).toFixed(1)}/5`}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{pct(r.sla_percent)}</TableCell>
+                    <TableCell className="font-medium">{nameOf(r.franchise_id)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{periodLabel(r.period)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{inr(r.revenue)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{num(r.leads)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{num(r.conversions)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{`${Number(r.csat).toFixed(1)}/5`}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{pct(r.sla_percent)}</TableCell>
                     <TableCell>
                       <RowActions
                         label={`${nameOf(r.franchise_id)} ${periodLabel(r.period)}`}

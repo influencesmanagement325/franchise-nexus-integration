@@ -163,13 +163,13 @@ function Page() {
                     transition={{ delay: Math.min(i * 0.03, 0.3) }}
                     className="border-b border-border/50 transition-colors hover:bg-accent/40"
                   >
-                    <TableCell className="text-sm font-medium">{nameOf(r.franchise_id)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{r.title}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{titleCase(r.category)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{titleCase(r.priority)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{r.raised_by}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{r.assigned_to}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{dateTime(r.sla_due)}</TableCell>
+                    <TableCell className="font-medium">{nameOf(r.franchise_id)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{r.title}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{titleCase(r.category)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{titleCase(r.priority)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{r.raised_by}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{r.assigned_to}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{dateTime(r.sla_due)}</TableCell>
                     <TableCell><StatusPill value={r.status} /></TableCell>
                     <TableCell>
                       <div className="flex items-center justify-end gap-1">

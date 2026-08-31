@@ -137,16 +137,16 @@ function Page() {
                     transition={{ delay: Math.min(i * 0.03, 0.3) }}
                     className="border-b border-border/50 transition-colors hover:bg-accent/40"
                   >
-                    <TableCell className="text-sm font-medium">{nameOf(r.franchise_id)}</TableCell>
-                    <TableCell className="max-w-[18rem] truncate text-sm">
+                    <TableCell className="font-medium">{nameOf(r.franchise_id)}</TableCell>
+                    <TableCell className="max-w-[18rem] truncate">
                       <span className="flex items-center gap-2">
                         {!r.read ? <span className="size-2 shrink-0 rounded-full bg-primary" aria-label="Unread" /> : null}
                         <span className="truncate">{r.title}</span>
                       </span>
                     </TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{r.message}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{r.message}</TableCell>
                     <TableCell><StatusPill value={r.type} /></TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{dateTime(r.created_at)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{dateTime(r.created_at)}</TableCell>
                     <TableCell>
                       <div className="flex items-center justify-end gap-1">
                         <Button

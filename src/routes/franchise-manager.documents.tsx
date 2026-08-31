@@ -181,11 +181,11 @@ function Page() {
                     transition={{ delay: Math.min(i * 0.03, 0.3) }}
                     className="border-b border-border/50 transition-colors hover:bg-accent/40"
                   >
-                    <TableCell className="text-sm font-medium">{nameOf(r.franchise_id)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{r.name}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{titleCase(r.doc_type)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{shortDate(r.uploaded_at)}</TableCell>
-                    <TableCell className="max-w-[22rem] truncate text-sm">{shortDate(r.expires_at)}</TableCell>
+                    <TableCell className="font-medium">{nameOf(r.franchise_id)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{r.name}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{titleCase(r.doc_type)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{shortDate(r.uploaded_at)}</TableCell>
+                    <TableCell className="max-w-[22rem] truncate">{shortDate(r.expires_at)}</TableCell>
                     <TableCell><StatusPill value={r.status} /></TableCell>
                     <TableCell>
                       <div className="flex items-center justify-end gap-1">
